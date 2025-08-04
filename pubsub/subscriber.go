@@ -11,7 +11,7 @@ import (
 	"cloud.google.com/go/pubsub"
 )
 
-func StartOrderSubscriber(ctx context.Context) {
+func StartOrderSubscriber(ctx context.Context, paymentService *services.PaymentService) {
 	client, _ := pubsub.NewClient(ctx, os.Getenv("GCP_PROJECT"))
 	sub := client.Subscription(os.Getenv("ORDER_SUBSCRIPTION_ID"))
 	sub.Receive(ctx, func(ctx context.Context, msg *pubsub.Message) {
@@ -21,7 +21,7 @@ func StartOrderSubscriber(ctx context.Context) {
 			msg.Nack()
 			return
 		}
-		services.CreatePayment(order.OrderID, order.Amount)
+		paymentService.CreatePayment(order.OrderID, order.Amount)
 		msg.Ack()
 	})
 }

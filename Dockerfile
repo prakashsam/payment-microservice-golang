@@ -1,14 +1,12 @@
-FROM golang:1.24
-
+FROM golang:1.24.5 as builder
 WORKDIR /app
-
-COPY go.mod ./
-COPY go.sum ./
-RUN go mod download
-
 COPY . .
+ENV CGO_ENABLED=0
+RUN go build -o payment-service main.go
 
-RUN go build -o payment-service .
+FROM gcr.io/distroless/static
 
-EXPOSE 8080
-CMD ["./payment-service"]
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /app/payment-service /
+
+CMD ["/payment-service"]

@@ -1,0 +1,54 @@
+steps:
+  # Step 1: Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '-t',
+        'us-central1-docker.pkg.dev/lyrical-mason-465314-f4/go-services/payment-service:$COMMIT_SHA',
+        '.'
+      ]
+
+  # Step 2: Push Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'push',
+        'us-central1-docker.pkg.dev/lyrical-mason-465314-f4/go-services/payment-service:$COMMIT_SHA'
+      ]
+
+  # Step 3: Setup Helm + Deploy Redis + Deploy payment Service
+  - name: 'gcr.io/cloud-builders/kubectl'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        # Install Helm
+        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+        # Authenticate to your GKE cluster
+        gcloud container clusters get-credentials payment-service-cluster --region=us-central1
+
+        # Add Bitnami repo & install Redis in-cluster (no auth)
+        helm repo add bitnami https://charts.bitnami.com/bitnami
+        helm upgrade --install redis bitnami/redis \
+          --set auth.enabled=false \
+          --set architecture=standalone
+
+        # Deploy your payment-service with env values
+        helm upgrade --install payment-service ./helm/payment-service \
+          --set image.repository=us-central1-docker.pkg.dev/lyrical-mason-465314-f4/go-services/payment-service \
+          --set image.tag=$COMMIT_SHA \
+          --set env.GCP_PROJECT_ID=lyrical-mason-465314-f4 \
+          --set env.DB_PORT=5432 \
+          --set env.DB_NAME=paymentpaymentdb \
+          --set env.DB_USER=postgres \
+          --set env.DB_HOST=34.57.113.181 \
+          --set env.payment_TOPIC_ID=paymentpayment \
+          --set env.ORDER_SUBSCRIPTION_ID=orderpayment-sub
+
+images:
+  - 'us-central1-docker.pkg.dev/lyrical-mason-465314-f4/go-services/payment-service:$COMMIT_SHA'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

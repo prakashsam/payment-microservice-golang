@@ -1,19 +1,21 @@
 package services
 
 import (
-	"paymentservice/db"
+	"gorm.io/gorm"
 	"paymentservice/models"
 )
 
-func CreatePayment(orderID string, amount int) {
-	DB := db.GetDBConnection()
-	p := models.Payment{OrderID: orderID, Amount: amount, Status: "Processed"}
-	DB.Create(&p)
+type PaymentService struct {
+	DB *gorm.DB
 }
 
-func GetPaymentByOrderID(orderID string) (models.Payment, error) {
-	DB := db.GetDBConnection()
+func (ps *PaymentService) CreatePayment(orderID string, amount int) error {
+	p := models.Payment{OrderID: orderID, Amount: amount, Status: "Processed"}
+	return ps.DB.Create(&p).Error
+}
+
+func (ps *PaymentService) GetPaymentByOrderID(orderID string) (models.Payment, error) {
 	var payment models.Payment
-	err := DB.Where("order_id = ?", orderID).First(&payment).Error
+	err := ps.DB.Where("order_id = ?", orderID).First(&payment).Error
 	return payment, err
 }

@@ -6,14 +6,17 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
-func GetPayment(ctx iris.Context) {
+type PaymentController struct {
+	Service *services.PaymentService
+}
+
+func (c *PaymentController) GetPayment(ctx iris.Context) {
 	orderID := ctx.Params().Get("order_id")
-	payment, err := services.GetPaymentByOrderID(orderID)
+	payment, err := c.Service.GetPaymentByOrderID(orderID)
 	if err != nil {
 		ctx.StatusCode(iris.StatusNotFound)
 		ctx.WriteString("Payment not found for given order ID")
 		return
 	}
-
 	ctx.JSON(payment)
 }

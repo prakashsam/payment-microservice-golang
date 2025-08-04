@@ -5,6 +5,7 @@ import (
 	"paymentservice/db"
 	"paymentservice/pubsub"
 	router "paymentservice/routes"
+	"paymentservice/services"
 
 	"github.com/joho/godotenv"
 	"github.com/kataras/iris/v12"
@@ -15,9 +16,10 @@ func main() {
 	godotenv.Load()
 	db.InitDBConnection()
 
-	go pubsub.StartOrderSubscriber(context.Background())
+	paymentService := &services.PaymentService{DB: db.GetDBConnection()}
+	go pubsub.StartOrderSubscriber(context.Background(), paymentService)
 
 	router.RegisterPaymentRoutes(app)
 
-	app.Listen(":8082")
+	app.Listen(":8083")
 }
