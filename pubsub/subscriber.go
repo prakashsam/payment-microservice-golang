@@ -26,3 +26,4 @@ func StartOrderSubscriber(ctx context.Context, paymentService *services.PaymentS
 		msg.Ack()
 	})
 }
+
