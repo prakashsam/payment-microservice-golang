@@ -4,15 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"paymentservice/config"
 	"paymentservice/models"
 	"paymentservice/services"
-	"paymentservice/config"
 
 	"cloud.google.com/go/pubsub"
 )
 
 func StartOrderSubscriber(ctx context.Context, paymentService *services.PaymentService) {
-	cfg := config.GetConfig()
+	cfg := config.Load()
 	client, _ := pubsub.NewClient(ctx, cfg.ProjectID)
 	sub := client.Subscription(cfg.orderSubscriptionID)
 	sub.Receive(ctx, func(ctx context.Context, msg *pubsub.Message) {
