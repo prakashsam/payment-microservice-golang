@@ -27,7 +27,7 @@ steps:
         curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
         # Authenticate to your GKE cluster
-        gcloud container clusters get-credentials payment-service-cluster --region=us-central1
+        gcloud container clusters get-credentials order-service-cluster --region=us-central1
 
         # Add Bitnami repo & install Redis in-cluster (no auth)
         helm repo add bitnami https://charts.bitnami.com/bitnami
