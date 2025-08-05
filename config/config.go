@@ -13,7 +13,7 @@ type Config struct {
 	DBName              string
 	DBUser              string
 	DBHost              string
-	orderSubscriptionID string
+	OrderSubscriptionID string
 }
 
 func Load() Config {
@@ -26,6 +26,6 @@ func Load() Config {
 		DBName:              os.Getenv("DB_NAME"),
 		DBUser:              os.Getenv("DB_USER"),
 		DBHost:              os.Getenv("DB_HOST"),
-		orderSubscriptionID: os.Getenv("ORDER_SUBSCRIPTION_ID"),
+		OrderSubscriptionID: os.Getenv("ORDER_SUBSCRIPTION_ID"),
 	}
 }
