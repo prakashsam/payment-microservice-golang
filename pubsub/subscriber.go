@@ -7,13 +7,15 @@ import (
 	"os"
 	"paymentservice/models"
 	"paymentservice/services"
+	"paymentservice/config"
 
 	"cloud.google.com/go/pubsub"
 )
 
 func StartOrderSubscriber(ctx context.Context, paymentService *services.PaymentService) {
-	client, _ := pubsub.NewClient(ctx, os.Getenv("GCP_PROJECT"))
-	sub := client.Subscription(os.Getenv("ORDER_SUBSCRIPTION_ID"))
+	cfg := config.GetConfig()
+	client, _ := pubsub.NewClient(ctx, cfg.GCPProjectID)
+	sub := client.Subscription(cfg.OrderSubscriptionID)
 	sub.Receive(ctx, func(ctx context.Context, msg *pubsub.Message) {
 		fmt.Printf("Received message: %s\n", string(msg.Data))
 		var order models.Payment
