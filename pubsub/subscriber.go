@@ -14,7 +14,7 @@ import (
 func StartOrderSubscriber(ctx context.Context, paymentService *services.PaymentService) {
 	cfg := config.GetConfig()
 	client, _ := pubsub.NewClient(ctx, cfg.ProjectID)
-	sub := client.Subscription(cfg.OrderSubscriptionID)
+	sub := client.Subscription(cfg.orderSubscriptionID)
 	sub.Receive(ctx, func(ctx context.Context, msg *pubsub.Message) {
 		fmt.Printf("Received message: %s\n", string(msg.Data))
 		var order models.Payment
