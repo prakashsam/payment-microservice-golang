@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
 	"paymentservice/models"
 	"paymentservice/services"
 	"paymentservice/config"
@@ -14,7 +13,7 @@ import (
 
 func StartOrderSubscriber(ctx context.Context, paymentService *services.PaymentService) {
 	cfg := config.GetConfig()
-	client, _ := pubsub.NewClient(ctx, cfg.GCPProjectID)
+	client, _ := pubsub.NewClient(ctx, cfg.ProjectID)
 	sub := client.Subscription(cfg.OrderSubscriptionID)
 	sub.Receive(ctx, func(ctx context.Context, msg *pubsub.Message) {
 		fmt.Printf("Received message: %s\n", string(msg.Data))

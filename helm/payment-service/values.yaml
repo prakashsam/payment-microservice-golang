@@ -15,5 +15,4 @@ env:
   DB_NAME: orderpaymentdb
   DB_USER: postgres
   DB_HOST: 34.57.113.181
-  ORDER_TOPIC_ID: orderpayment
   ORDER_SUBSCRIPTION_ID: orderpayment-sub

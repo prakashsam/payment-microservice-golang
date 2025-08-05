@@ -29,7 +29,5 @@ spec:
               value: {{ .Values.env.DB_USER | quote }}
             - name: DB_HOST
               value: {{ .Values.env.DB_HOST | quote }}
-            - name: payment_TOPIC_ID
-              value: {{ .Values.env.payment_TOPIC_ID | quote }}
-            - name: payment_SUBSCRIPTION_ID
-              value: {{ .Values.env.payment_SUBSCRIPTION_ID | quote }}  
+            - name: ORDER_SUBSCRIPTION_ID
+              value: {{ .Values.env.ORDER_SUBSCRIPTION_ID | quote }}  
